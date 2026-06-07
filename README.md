@@ -164,6 +164,34 @@ GET /.well-known/passkey-gate/jwks.json
 
 They never receive `AUTH_PRIVATE_KEY` or a shared session secret.
 
+## Test With The Protected Worker Example
+
+After the auth service is deployed and you have an enrolled passkey, deploy the example protected Worker:
+
+```sh
+AUTH_ORIGIN=https://<your-auth-worker-origin> \
+AUTH_WORKER_NAME=<your-auth-worker-script-name> \
+APP_ID=photos \
+PROTECTED_WORKER_NAME=photos-protected \
+bun ./examples/protected-worker/alchemy.run.ts
+```
+
+`AUTH_WORKER_NAME` creates a Cloudflare service binding from the protected Worker to the auth Worker. This avoids public Worker-to-Worker `workers.dev` subrequests during token exchange and JWKS verification.
+
+The example deploy prints its workers.dev URL. Add that origin to the auth service `.env`:
+
+```sh
+ALLOWED_APPS={"photos":"https://<printed-protected-worker-origin>"}
+```
+
+Then redeploy the auth service:
+
+```sh
+bun ./alchemy.run.ts
+```
+
+Open the protected Worker URL. It should redirect to the auth service login panel, then return and display `Hello <email>` after passkey login.
+
 ## Routes
 
 - `GET /health`
