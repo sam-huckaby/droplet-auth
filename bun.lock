@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "passkey-gate",
+      "name": "@droplet-auth/client",
       "dependencies": {
         "@simplewebauthn/browser": "latest",
         "@simplewebauthn/server": "latest",

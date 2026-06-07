@@ -1,4 +1,4 @@
-export function createPasskeyGateClient(options: { authOrigin: string; appId: string }) {
+export function createDropletAuthClient(options: { authOrigin: string; appId: string }) {
   return {
     requireLogin(returnTo = globalThis.location.href) {
       const url = new URL("/login", options.authOrigin);
@@ -9,4 +9,4 @@ export function createPasskeyGateClient(options: { authOrigin: string; appId: st
   };
 }
 
-export { createPasskeyGateClient as requireLogin };
+export { createDropletAuthClient as requireLogin };

@@ -21,7 +21,7 @@ export default {
         return handleHealth(env);
       }
 
-      if (request.method === "GET" && url.pathname === "/.well-known/passkey-gate/jwks.json") {
+      if (request.method === "GET" && url.pathname === "/.well-known/droplet-auth/jwks.json") {
         return handleJwks(request, env);
       }
 

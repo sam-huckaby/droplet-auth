@@ -1,8 +1,8 @@
-# Passkey Gate
+# Droplet Auth
 
 Beta self-hosted passkey authentication for Cloudflare Workers.
 
-Passkey Gate lets you deploy your own auth Worker, enroll passkeys, and protect private Worker apps without giving those apps a shared signing secret.
+Droplet Auth lets you deploy your own auth Worker, enroll passkeys, and protect private Worker apps without giving those apps a shared signing secret.
 
 ## Status
 
@@ -30,7 +30,7 @@ Required non-secret config in `.env`:
 
 ```txt
 WORKER_ROOT=myteam.workers.dev
-AUTH_WORKER_NAME=passkey-gate
+AUTH_WORKER_NAME=droplet-auth
 ALLOWED_APPS={"photos":"https://photos.example.com"}
 ```
 
@@ -130,12 +130,12 @@ AUTH_ORIGIN=https://auth.example.com
 APP_ID=photos
 ```
 
-Worker helper exports are available from `@passkey-gate/client/worker`.
+Worker helper exports are available from `@droplet-auth/client/worker`.
 
 Example:
 
 ```ts
-import { createAuthRedirect, handleAuthCallback, verifyAppSession } from "@passkey-gate/client/worker";
+import { createAuthRedirect, handleAuthCallback, verifyAppSession } from "@droplet-auth/client/worker";
 
 export default {
   async fetch(request, env) {
@@ -153,7 +153,7 @@ export default {
 Protected apps fetch public key material from:
 
 ```txt
-GET /.well-known/passkey-gate/jwks.json
+GET /.well-known/droplet-auth/jwks.json
 ```
 
 They never receive `AUTH_PRIVATE_KEY` or a shared session secret.
@@ -189,7 +189,7 @@ Open the protected Worker URL. It should redirect to the auth service login pane
 ## Routes
 
 - `GET /health`
-- `GET /.well-known/passkey-gate/jwks.json`
+- `GET /.well-known/droplet-auth/jwks.json`
 - `GET /admin`
 - `POST /api/admin/bootstrap-login`
 - `POST /api/admin/bootstrap-enrollment-link`

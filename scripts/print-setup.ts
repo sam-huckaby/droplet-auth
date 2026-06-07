@@ -23,7 +23,7 @@ const bootstrapPw = process.env.BOOTSTRAP_PW?.trim() || "<choose-a-strong-bootst
 const allowBootstrapPw = process.env.ALLOW_BOOTSTRAP_PW?.trim() || "true";
 
 console.log(`
-Passkey Gate setup
+Droplet Auth setup
 
 1. Configure Alchemy for Cloudflare if you have not already:
 
@@ -51,7 +51,7 @@ ${generatedKey ? `   Generated AUTH_PRIVATE_KEY because it was missing from .env
 
    Admin: ${setup.authOrigin}/admin
    Health: ${setup.authOrigin}/health
-   JWKS: ${setup.authOrigin}/.well-known/passkey-gate/jwks.json
+   JWKS: ${setup.authOrigin}/.well-known/droplet-auth/jwks.json
 
 6. After enrolling your first admin passkey, update .env and redeploy:
 

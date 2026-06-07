@@ -1,12 +1,12 @@
 import { createLocalJWKSet, jwtVerify, type JSONWebKeySet, type JWTPayload } from "jose";
 
-export interface PasskeyGateSession extends JWTPayload {
+export interface DropletAuthSession extends JWTPayload {
   sub: string;
   email: string;
   isAdmin: boolean;
 }
 
-export interface PasskeyGateWorkerOptions {
+export interface DropletAuthWorkerOptions {
   appId: string;
   authOrigin: string;
   authService?: Fetcher;
@@ -22,7 +22,7 @@ export function createAuthRedirect(request: Request, options: { appId: string; a
   return Response.redirect(url.toString(), 302);
 }
 
-export async function handleAuthCallback(request: Request, options: PasskeyGateWorkerOptions): Promise<Response | null> {
+export async function handleAuthCallback(request: Request, options: DropletAuthWorkerOptions): Promise<Response | null> {
   const url = new URL(request.url);
   const code = url.searchParams.get("code");
   if (!code) return null;
@@ -56,24 +56,24 @@ export async function handleAuthCallback(request: Request, options: PasskeyGateW
     status: 303,
     headers: {
       location: url.toString(),
-      "set-cookie": `${options.cookieName ?? "pg_session"}=${encodeURIComponent(body.session)}; Expires=${new Date(body.expiresAt).toUTCString()}; Path=/; HttpOnly; Secure; SameSite=Lax`,
+      "set-cookie": `${options.cookieName ?? "da_session"}=${encodeURIComponent(body.session)}; Expires=${new Date(body.expiresAt).toUTCString()}; Path=/; HttpOnly; Secure; SameSite=Lax`,
     },
   });
 }
 
-export async function verifyAppSession(request: Request, options: PasskeyGateWorkerOptions): Promise<PasskeyGateSession | null> {
-  const token = getCookie(request, options.cookieName ?? "pg_session");
+export async function verifyAppSession(request: Request, options: DropletAuthWorkerOptions): Promise<DropletAuthSession | null> {
+  const token = getCookie(request, options.cookieName ?? "da_session");
   if (!token) return null;
   try {
     const jwks = await fetchAuthPublicKey(options.authOrigin, options.authService);
     const result = await jwtVerify(token, createLocalJWKSet(jwks), { issuer: options.authOrigin, audience: options.appId });
-    return result.payload as PasskeyGateSession;
+    return result.payload as DropletAuthSession;
   } catch {
     return null;
   }
 }
 
-export async function requireLogin(request: Request, options: PasskeyGateWorkerOptions): Promise<PasskeyGateSession | Response> {
+export async function requireLogin(request: Request, options: DropletAuthWorkerOptions): Promise<DropletAuthSession | Response> {
   const callback = await handleAuthCallback(request, options);
   if (callback) return callback;
   const session = await verifyAppSession(request, options);
@@ -89,13 +89,13 @@ function parseMaybeJson(value: string): unknown {
 }
 
 export async function fetchAuthPublicKey(authOrigin: string, authService?: Fetcher): Promise<JSONWebKeySet> {
-  const request = new Request(new URL("/.well-known/passkey-gate/jwks.json", authOrigin));
+  const request = new Request(new URL("/.well-known/droplet-auth/jwks.json", authOrigin));
   const response = await fetchWithOptionalService({ authService }, request);
   if (!response.ok) throw new Error(`Unable to fetch auth public key: ${response.status}`);
   return response.json() as Promise<JSONWebKeySet>;
 }
 
-async function fetchWithOptionalService(options: Pick<PasskeyGateWorkerOptions, "authService">, request: Request): Promise<Response> {
+async function fetchWithOptionalService(options: Pick<DropletAuthWorkerOptions, "authService">, request: Request): Promise<Response> {
   return options.authService ? options.authService.fetch(request) : fetch(request);
 }
 

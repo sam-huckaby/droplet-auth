@@ -3,7 +3,7 @@ import { DurableObjectNamespace, Worker } from "alchemy/cloudflare";
 import type { AuthState } from "./src/auth-state";
 import { requireSetupEnv } from "./src/setup-config";
 
-const app = await alchemy("passkey-gate");
+const app = await alchemy("droplet-auth");
 const setup = requireSetupEnv(process.env);
 
 function requireEnv(name: string): string {
@@ -36,7 +36,7 @@ export const authWorker = await Worker("auth-worker", {
 });
 
 console.log(`
-Passkey Gate deployment
+Droplet Auth deployment
 
 Configured:
   Worker name: ${setup.authWorkerName}
@@ -50,7 +50,7 @@ Alchemy:
 Open:
   Admin: ${setup.authOrigin}/admin
   Health: ${setup.authOrigin}/health
-  JWKS: ${setup.authOrigin}/.well-known/passkey-gate/jwks.json
+  JWKS: ${setup.authOrigin}/.well-known/droplet-auth/jwks.json
 `);
 
 if (authWorker.url && authWorker.url !== setup.authOrigin) {

@@ -1,7 +1,7 @@
 import alchemy from "alchemy";
 import { Worker, WorkerRef } from "alchemy/cloudflare";
 
-const app = await alchemy("passkey-gate-protected-worker");
+const app = await alchemy("droplet-auth-protected-worker");
 
 function requireEnv(name: string): string {
   const value = process.env[name]?.trim();

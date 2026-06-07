@@ -8,7 +8,7 @@ export function rpId(config: AppConfig): string {
 
 export async function registrationOptions(config: AppConfig, input: { email: string; label: string }) {
   return generateRegistrationOptions({
-    rpName: "Passkey Gate",
+    rpName: "Droplet Auth",
     rpID: rpId(config),
     userName: input.email,
     userDisplayName: input.label || input.email,

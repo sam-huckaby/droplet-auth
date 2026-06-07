@@ -1,4 +1,4 @@
-# PLAN.md — Passkey Gate for Cloudflare Workers
+# PLAN.md — Droplet Auth for Cloudflare Workers
 
 ## Project Summary
 
@@ -144,7 +144,7 @@ Protected apps should verify tokens using the corresponding public key exposed b
 The auth service should expose its public key at:
 
 ```txt
-GET /.well-known/passkey-gate/jwks.json
+GET /.well-known/droplet-auth/jwks.json
 ```
 
 or:
@@ -156,7 +156,7 @@ GET /api/public-key
 Preferred first version:
 
 ```txt
-GET /.well-known/passkey-gate/jwks.json
+GET /.well-known/droplet-auth/jwks.json
 ```
 
 Protected apps can fetch and cache this public key.
@@ -291,10 +291,10 @@ Pseudo-shape:
 import alchemy from "alchemy";
 import { Worker } from "alchemy/cloudflare";
 
-const app = await alchemy("passkey-gate");
+const app = await alchemy("droplet-auth");
 
-const auth = await Worker("passkey-gate-worker", {
-  name: "passkey-gate",
+const auth = await Worker("droplet-auth-worker", {
+  name: "droplet-auth",
   entrypoint: "./src/index.ts",
   compatibilityDate: "2026-06-01",
   bindings: {
@@ -1037,7 +1037,7 @@ Publish a small library from the repo.
 Initial exports:
 
 ```ts
-createPasskeyGateClient
+createDropletAuthClient
 requireLogin
 handleAuthCallback
 verifyAppSession
@@ -1048,9 +1048,9 @@ fetchAuthPublicKey
 ### Browser Helper
 
 ```ts
-import { createPasskeyGateClient } from "@passkey-gate/client/browser";
+import { createDropletAuthClient } from "@droplet-auth/client/browser";
 
-const auth = createPasskeyGateClient({
+const auth = createDropletAuthClient({
   authOrigin: "https://auth.example.com",
   appId: "photos"
 });
@@ -1061,7 +1061,7 @@ await auth.requireLogin();
 ### Worker Helper
 
 ```ts
-import { verifyAppSession, createAuthRedirect } from "@passkey-gate/client/worker";
+import { verifyAppSession, createAuthRedirect } from "@droplet-auth/client/worker";
 
 export default {
   async fetch(request, env) {
@@ -1118,7 +1118,7 @@ Returns:
 ### Public Key
 
 ```txt
-GET /.well-known/passkey-gate/jwks.json
+GET /.well-known/droplet-auth/jwks.json
 ```
 
 Returns public key material for verifying signed sessions.

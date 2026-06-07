@@ -8,7 +8,7 @@ export function htmlPage(title: string, body: string): Response {
   <title>${escapeHtml(title)}</title>
   <style>
     :root {
-      color-scheme: light;
+      color-scheme: light dark;
       --bg: #f6f7f9;
       --surface: #ffffff;
       --surface-soft: #f9fafb;
@@ -23,7 +23,29 @@ export function htmlPage(title: string, body: string): Response {
       --red-bg: #fee2e2;
       --amber: #b45309;
       --amber-bg: #fef3c7;
+      --notice-bg: #eff6ff;
+      --panel-shadow: 0 12px 28px rgb(15 23 42 / 0.05);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0b1120;
+        --surface: #111827;
+        --surface-soft: #172033;
+        --border: #334155;
+        --border-soft: #233047;
+        --text: #e5edf8;
+        --muted: #9aa7bb;
+        --accent: #ad4823;
+        --green: #86efac;
+        --green-bg: #052e1a;
+        --red: #fca5a5;
+        --red-bg: #3f1114;
+        --amber: #fcd34d;
+        --amber-bg: #3a2606;
+        --notice-bg: #0d2242;
+        --panel-shadow: 0 16px 34px rgb(0 0 0 / 0.24);
+      }
     }
     * { box-sizing: border-box; }
     body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--text); }
@@ -44,8 +66,9 @@ export function htmlPage(title: string, body: string): Response {
     th, td { padding: 0.8rem 0.9rem; border-bottom: 1px solid var(--border-soft); vertical-align: middle; }
     tbody tr:hover { background: color-mix(in srgb, var(--surface-soft) 70%, transparent); }
     code { border: 1px solid var(--border-soft); border-radius: 6px; padding: 0.1rem 0.3rem; background: var(--surface-soft); }
-    .panel, .card { border: 1px solid var(--border); border-radius: 18px; background: var(--surface); box-shadow: 0 12px 28px rgb(15 23 42 / 0.05); }
+    .panel, .card { border: 1px solid var(--border); border-radius: 18px; background: var(--surface); box-shadow: var(--panel-shadow); }
     .panel { padding: 2rem; }
+    .panel-centered { display: flex; flex-direction: column; align-items: center; }
     .panel-narrow { width: min(92vw, 34rem); margin: 12vh auto 0; }
     .admin-shell { display: grid; gap: 1.2rem; }
     .admin-header { display: flex; justify-content: space-between; gap: 1rem; align-items: flex-start; margin-bottom: 0.4rem; }
@@ -72,7 +95,7 @@ export function htmlPage(title: string, body: string): Response {
     .icon-revoke { color: var(--red); border-color: color-mix(in srgb, var(--red) 45%, var(--border)); background: var(--red-bg); }
     .muted { color: var(--muted); }
     .empty { text-align: center; color: var(--muted); padding: 1.6rem; }
-    .notice { border-color: color-mix(in srgb, var(--accent) 28%, var(--border)); background: #eff6ff; }
+    .notice { border-color: color-mix(in srgb, var(--accent) 28%, var(--border)); background: var(--notice-bg); }
     @media (max-width: 760px) {
       main { width: min(94vw, 100%); padding: 1rem 0 2rem; }
       .admin-header, .form-grid { grid-template-columns: 1fr; display: grid; }

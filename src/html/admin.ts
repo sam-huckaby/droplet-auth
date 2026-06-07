@@ -1,16 +1,16 @@
-import { clearCookie } from "../crypto/cookies";
+import { ADMIN_SESSION_COOKIE, BOOTSTRAP_SESSION_COOKIE, clearCookie } from "../crypto/cookies";
 import { escapeHtml, htmlPage } from "./layout";
 import { webauthnScript } from "./scripts";
 import type { AppUsageSummary, AuditEventRecord, PasskeyRecord, PasskeyUsageSummary } from "../types";
 
 export function adminLoginPage(allowBootstrap: boolean): Response {
   return htmlPage(
-    "Passkey Gate Admin",
-    `<section class="panel panel-narrow">
+    "Droplet Auth Admin",
+    `<section class="panel panel-narrow panel-centered">
       <h1>Admin</h1>
       <p>Sign in with an admin passkey.</p>
       <button class="button-primary" id="admin-passkey">Use admin passkey</button>
-      ${allowBootstrap ? `<hr><form method="post" action="/api/admin/bootstrap-login"><label>Bootstrap password <input type="password" name="password" autocomplete="current-password" required></label><button type="submit">Use bootstrap password</button></form>` : ""}
+      ${allowBootstrap ? `<hr style="width:100%;"><form method="post" action="/api/admin/bootstrap-login"><label>Bootstrap password <input type="password" name="password" autocomplete="current-password" required></label><button type="submit">Use bootstrap password</button></form>` : ""}
     </section>
     ${webauthnScript}
     <script>
@@ -61,10 +61,10 @@ export function adminDashboard(passkeys: PasskeyRecord[], audit: AuditEventRecor
     .join("");
 
   return htmlPage(
-    "Passkey Gate Admin",
+    "Droplet Auth Admin",
     `<section class="admin-shell">
       <div class="admin-header">
-        <div><h1>Passkey Gate</h1><p>Manage passkeys, enrollment links, and recent authentication activity.</p></div>
+        <div><h1>Droplet Auth</h1><p>Manage passkeys, enrollment links, and recent authentication activity.</p></div>
         <form method="post" action="/api/admin/logout"><button class="button-muted" type="submit">Log out</button></form>
       </div>
       ${createdLink ? `<div class="card notice"><div class="card-header"><h2>Enrollment link</h2><p>This raw link is shown once.</p></div><div class="card-body"><a href="${escapeHtml(createdLink)}">${escapeHtml(createdLink)}</a></div></div>` : ""}
@@ -122,7 +122,7 @@ function formatDateTime(value: string | null): string {
 
 export function logoutResponse(): Response {
   const headers = new Headers({ location: "/admin" });
-  headers.append("set-cookie", clearCookie("pg_admin"));
-  headers.append("set-cookie", clearCookie("pg_bootstrap"));
+  headers.append("set-cookie", clearCookie(ADMIN_SESSION_COOKIE));
+  headers.append("set-cookie", clearCookie(BOOTSTRAP_SESSION_COOKIE));
   return new Response(null, { status: 303, headers });
 }

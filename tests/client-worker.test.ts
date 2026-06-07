@@ -32,7 +32,7 @@ describe("worker client", () => {
     });
     expect(response?.status).toBe(303);
     expect(response?.headers.get("location")).toBe("https://photos.example.com/");
-    expect(response?.headers.get("set-cookie")).toContain("pg_session=token");
+    expect(response?.headers.get("set-cookie")).toContain("da_session=token");
   });
 
   it("uses service binding for callback code exchange when provided", async () => {
@@ -81,7 +81,7 @@ describe("worker client", () => {
     const token = await signAppSession(secret, { iss: "https://auth.example.com", aud: "photos", sub: "pk_1", email: "sam@example.com", isAdmin: false }, new Date(Date.now() + 60_000));
     const jwks = await publicJwksFromPrivateSecret(secret);
     vi.stubGlobal("fetch", vi.fn(async () => Response.json(jwks)));
-    const session = await verifyAppSession(new Request("https://photos.example.com/", { headers: { cookie: `pg_session=${token}` } }), {
+    const session = await verifyAppSession(new Request("https://photos.example.com/", { headers: { cookie: `da_session=${token}` } }), {
       appId: "photos",
       authOrigin: "https://auth.example.com",
     });
@@ -103,7 +103,7 @@ describe("worker client", () => {
     const authService = {
       fetch: vi.fn(async () => Response.json(jwks)),
     } as unknown as Fetcher;
-    const session = await verifyAppSession(new Request("https://tracker.example.com/", { headers: { cookie: `pg_session=${token}` } }), {
+    const session = await verifyAppSession(new Request("https://tracker.example.com/", { headers: { cookie: `da_session=${token}` } }), {
       appId: "tracker",
       authOrigin: "https://auth.example.com",
       authService,

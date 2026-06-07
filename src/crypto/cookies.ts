@@ -1,5 +1,5 @@
-export const ADMIN_SESSION_COOKIE = "pg_admin";
-export const BOOTSTRAP_SESSION_COOKIE = "pg_bootstrap";
+export const ADMIN_SESSION_COOKIE = "da_admin";
+export const BOOTSTRAP_SESSION_COOKIE = "da_bootstrap";
 
 export function getCookie(request: Request, name: string): string | undefined {
   const cookie = request.headers.get("cookie");
