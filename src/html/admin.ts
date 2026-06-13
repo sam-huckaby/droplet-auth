@@ -50,12 +50,12 @@ export function adminDashboard(
   const rows = passkeys
     .map(
       (passkey) => `<tr>
-        <td><input data-passkey-label="${escapeHtml(passkey.id)}" value="${escapeHtml(passkey.label)}"></td>
-        <td><input data-passkey-email="${escapeHtml(passkey.id)}" type="email" value="${escapeHtml(passkey.email)}"></td>
+        <td>${editableField(passkey.id, "label", passkey.label)}</td>
+        <td>${editableField(passkey.id, "email", passkey.email, "email")}</td>
         <td>${passkey.isAdmin ? badge("Admin", "green") : badge("User", "gray")}</td>
         <td>${passkeyAccess(passkey)}</td>
         <td>${formatDateTime(passkey.createdAt)}</td><td>${formatDateTime(passkey.lastUsedAt)}</td><td>${passkey.revokedAt ? badge("Revoked", "red") : badge("Active", "green")}</td>
-        <td><div class="actions"><button class="icon-button icon-save" data-passkey-save="${escapeHtml(passkey.id)}" type="button" aria-label="Save passkey changes" title="Save changes">✓</button><form method="post" action="/api/admin/passkeys/${encodeURIComponent(passkey.id)}/revoke"><button class="icon-button icon-revoke" type="submit" aria-label="Revoke passkey" title="Revoke passkey">✕</button></form></div></td>
+        <td><div class="actions"><form method="post" action="/api/admin/passkeys/${encodeURIComponent(passkey.id)}/revoke"><button class="button-revoke" type="submit">Revoke</button></form></div></td>
       </tr>`,
     )
     .join("");
@@ -90,14 +90,37 @@ export function adminDashboard(
       ${auditCard("Recent audit", "Recent authentication and administration events.", `<table><thead><tr><th>Time</th><th>Event</th><th>App</th><th>Email</th></tr></thead><tbody>${auditRows || emptyRow(4, "No audit events yet.")}</tbody></table>`, auditPagination)}
     </section>
     <script>
-    for (const button of document.querySelectorAll('[data-passkey-save]')) {
-      button.addEventListener('click', async () => {
-        const id = button.getAttribute('data-passkey-save');
-        const email = document.querySelector('[data-passkey-email="' + CSS.escape(id) + '"]').value;
-        const label = document.querySelector('[data-passkey-label="' + CSS.escape(id) + '"]').value;
-        const response = await fetch('/api/admin/passkeys/' + encodeURIComponent(id), { method: 'PATCH', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email, label }) });
-        if (response.ok) location.reload(); else alert('Unable to update passkey');
+    for (const field of document.querySelectorAll('[data-editable-field]')) {
+      const input = field.querySelector('input');
+      const save = field.querySelector('[data-field-save]');
+      const saved = field.querySelector('[data-field-saved]');
+      if (!input || !save || !saved) continue;
+      let savedTimer;
+      function syncFieldState() {
+        clearTimeout(savedTimer);
+        saved.hidden = true;
+        save.hidden = input.value === input.dataset.originalValue;
+      }
+      input.addEventListener('input', syncFieldState);
+      save.addEventListener('click', async () => {
+        const id = field.getAttribute('data-passkey-id');
+        const fieldName = field.getAttribute('data-field-name');
+        if (!id || !fieldName) return;
+        const value = input.value;
+        save.disabled = true;
+        const response = await fetch('/api/admin/passkeys/' + encodeURIComponent(id), { method: 'PATCH', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ [fieldName]: value }) });
+        save.disabled = false;
+        if (!response.ok) { alert('Unable to update passkey'); syncFieldState(); return; }
+        input.dataset.originalValue = value;
+        if (input.value === value) {
+          save.hidden = true;
+          saved.hidden = false;
+          savedTimer = setTimeout(() => { saved.hidden = true; }, 3000);
+        } else {
+          syncFieldState();
+        }
       });
+      syncFieldState();
     }
     const adminCheckbox = document.querySelector('input[name="createsAdminPasskey"]');
     const appScopeField = document.querySelector('[data-app-scope-field]');
@@ -142,6 +165,10 @@ function emptyRow(colspan: number, message: string): string {
 
 function badge(label: string, color: "green" | "red" | "amber" | "gray"): string {
   return `<span class="badge badge-${color}">${escapeHtml(label)}</span>`;
+}
+
+function editableField(passkeyId: string, fieldName: "label" | "email", value: string, type = "text"): string {
+  return `<div class="editable-field" data-editable-field data-passkey-id="${escapeHtml(passkeyId)}" data-field-name="${fieldName}"><input data-passkey-${fieldName}="${escapeHtml(passkeyId)}" data-original-value="${escapeHtml(value)}" type="${type}" value="${escapeHtml(value)}"><span class="field-action-slot"><button class="field-save" data-field-save type="button" hidden>Save</button><span class="field-saved" data-field-saved hidden aria-live="polite">✓</span></span></div>`;
 }
 
 function passkeyAccess(passkey: PasskeyRecord): string {

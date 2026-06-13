@@ -91,6 +91,11 @@ export function htmlPage(title: string, body: string): Response {
     .badge-gray { background: var(--surface-soft); color: var(--muted); border: 1px solid var(--border-soft); }
     .actions { display: flex; gap: 0.45rem; align-items: center; }
     .actions form { margin: 0; }
+    .editable-field { display: grid; grid-template-columns: minmax(12rem, 1fr) 4.6rem; gap: 0.45rem; align-items: center; min-width: 18rem; }
+    .field-action-slot { width: 4.6rem; min-height: 2.25rem; display: grid; place-items: center; }
+    .field-save { width: 100%; padding-inline: 0.65rem; color: var(--green); border-color: color-mix(in srgb, var(--green) 45%, var(--border)); background: var(--green-bg); }
+    .field-saved { color: var(--green); font-weight: 800; }
+    .button-revoke { color: var(--red); border-color: color-mix(in srgb, var(--red) 45%, var(--border)); background: var(--red-bg); }
     .pagination { display: flex; flex-wrap: wrap; gap: 0.8rem; align-items: end; justify-content: space-between; margin-top: 0.85rem; }
     .pagination form { margin: 0; }
     .pagination label { min-width: 10rem; }
@@ -98,9 +103,6 @@ export function htmlPage(title: string, body: string): Response {
     .pagination-link { border: 1px solid var(--border); border-radius: 10px; padding: 0.55rem 0.85rem; background: var(--surface); color: var(--text); text-decoration: none; font-size: 0.9rem; }
     .pagination-link:not(.disabled):hover { border-color: color-mix(in srgb, var(--accent) 55%, var(--border)); }
     .pagination-link.disabled { color: var(--muted); opacity: 0.7; cursor: default; }
-    .icon-button { width: 2.1rem; height: 2.1rem; display: inline-grid; place-items: center; padding: 0; font-weight: 800; font-size: 1rem; }
-    .icon-save { color: var(--green); border-color: color-mix(in srgb, var(--green) 45%, var(--border)); background: var(--green-bg); }
-    .icon-revoke { color: var(--red); border-color: color-mix(in srgb, var(--red) 45%, var(--border)); background: var(--red-bg); }
     .muted { color: var(--muted); }
     .empty { text-align: center; color: var(--muted); padding: 1.6rem; }
     .notice { border-color: color-mix(in srgb, var(--accent) 28%, var(--border)); background: var(--notice-bg); }
