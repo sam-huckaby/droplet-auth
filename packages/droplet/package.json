@@ -1,0 +1,45 @@
+{
+  "name": "@whnvr/droplet",
+  "version": "0.1.0",
+  "description": "Composable helpers for self-hosted Droplet apps.",
+  "keywords": ["auth", "passkeys", "cloudflare", "worker", "droplet"],
+  "homepage": "https://github.com/sam-huckaby/droplet#readme",
+  "bugs": {
+    "url": "https://github.com/sam-huckaby/droplet/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sam-huckaby/droplet.git",
+    "directory": "packages/droplet"
+  },
+  "license": "MIT",
+  "author": "Sam Huckaby",
+  "type": "module",
+  "files": ["dist", "templates", "README.md", "LICENSE"],
+  "bin": {
+    "droplet": "./dist/cli.js"
+  },
+  "exports": {
+    "./auth/worker": {
+      "types": "./dist/auth/client/worker.d.ts",
+      "import": "./dist/auth/client/worker.js"
+    },
+    "./auth/browser": {
+      "types": "./dist/auth/client/browser.d.ts",
+      "import": "./dist/auth/client/browser.js"
+    }
+  },
+  "dependencies": {
+    "jose": "latest"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "latest",
+    "@types/node": "latest",
+    "typescript": "latest"
+  },
+  "scripts": {
+    "check": "bunx tsc --noEmit",
+    "build": "rm -rf dist && bunx tsc -p tsconfig.build.json --listEmittedFiles && chmod +x dist/cli.js",
+    "publish:dry-run": "bun run build && npm pack --dry-run"
+  }
+}

@@ -1048,7 +1048,7 @@ fetchAuthPublicKey
 ### Browser Helper
 
 ```ts
-import { createDropletAuthClient } from "@droplet-auth/client/browser";
+import { createDropletAuthClient } from "@whnvr/droplet/auth/browser";
 
 const auth = createDropletAuthClient({
   authOrigin: "https://auth.example.com",
@@ -1061,7 +1061,7 @@ await auth.requireLogin();
 ### Worker Helper
 
 ```ts
-import { verifyAppSession, createAuthRedirect } from "@droplet-auth/client/worker";
+import { verifyAppSession, createAuthRedirect } from "@whnvr/droplet/auth/worker";
 
 export default {
   async fetch(request, env) {
