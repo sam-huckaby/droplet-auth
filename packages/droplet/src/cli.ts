@@ -4,9 +4,11 @@ import { basename, dirname, join, resolve } from "node:path";
 
 const USAGE = `Usage:
   droplet make auth <dir> [--force]
+  droplet make tasks <dir> [--force]
 
 Commands:
   make auth <dir>   Create a standalone Droplet Auth app from the packaged template.
+  make tasks <dir>  Create a standalone Droplet Tasks app from the packaged template.
 
 Options:
   --force           Replace an existing target directory.
@@ -19,7 +21,7 @@ async function main(args: string[]): Promise<void> {
   }
 
   const [command, type, targetArg, ...rest] = args;
-  if (command !== "make" || type !== "auth" || !targetArg) {
+  if (command !== "make" || !isTemplateType(type) || !targetArg) {
     throw new CliError(USAGE);
   }
 
@@ -28,17 +30,24 @@ async function main(args: string[]): Promise<void> {
     throw new CliError(`Unknown option: ${unknown[0]}\n\n${USAGE}`);
   }
 
-  await makeAuth(targetArg, { force: rest.includes("--force") });
+  await makeApp(type, targetArg, { force: rest.includes("--force") });
 }
 
-async function makeAuth(targetArg: string, options: { force: boolean }): Promise<void> {
+type TemplateType = "auth" | "tasks";
+
+function isTemplateType(value: string | undefined): value is TemplateType {
+  return value === "auth" || value === "tasks";
+}
+
+async function makeApp(type: TemplateType, targetArg: string, options: { force: boolean }): Promise<void> {
   const packageRoot = new URL("..", import.meta.url).pathname;
-  const templateDir = join(packageRoot, "templates/auth");
+  const templateDir = join(packageRoot, `templates/${type}`);
   const targetDir = resolve(process.cwd(), targetArg);
-  const projectName = toPackageName(basename(targetDir));
+  const projectName = toPackageName(basename(targetDir), type);
+  const displayName = type === "auth" ? "Auth" : "Tasks";
 
   if (!(await exists(templateDir))) {
-    throw new CliError(`Auth template not found at ${templateDir}. Reinstall @whnvr/droplet and try again.`);
+    throw new CliError(`${displayName} template not found at ${templateDir}. Reinstall @whnvr/droplet and try again.`);
   }
 
   if (await exists(targetDir)) {
@@ -54,8 +63,13 @@ async function makeAuth(targetArg: string, options: { force: boolean }): Promise
 
   await copyTemplate(templateDir, targetDir, { projectName });
 
-  console.log(`Created Droplet Auth app in ${targetDir}`);
-  console.log(`\nNext steps:\n  cd ${targetArg}\n  bun install\n  cp .env.example .env\n  bun run setup:print\n  bun alchemy plan ./alchemy.run.ts`);
+  console.log(`Created Droplet ${displayName} app in ${targetDir}`);
+  console.log(nextSteps(type, targetArg));
+}
+
+function nextSteps(type: TemplateType, targetArg: string): string {
+  const setup = type === "auth" ? "\n  bun run setup:print" : "";
+  return `\nNext steps:\n  cd ${targetArg}\n  bun install\n  cp .env.example .env${setup}\n  bun alchemy plan ./alchemy.run.ts`;
 }
 
 async function copyTemplate(from: string, to: string, replacements: { projectName: string }): Promise<void> {
@@ -91,13 +105,13 @@ function isTextFile(path: string): boolean {
   return /\.(css|html|js|json|jsonc|md|mjs|ts|tsx|txt|yml|yaml|toml|webmanifest)$/.test(path) || basename(path).startsWith(".");
 }
 
-function toPackageName(value: string): string {
+function toPackageName(value: string, type: TemplateType): string {
   const name = value
     .toLowerCase()
     .replace(/[^a-z0-9._-]+/g, "-")
     .replace(/^[._-]+|[._-]+$/g, "")
     .replace(/-{2,}/g, "-");
-  return name || "droplet-auth";
+  return name || (type === "auth" ? "droplet-auth" : "droplet-tasks");
 }
 
 class CliError extends Error {}

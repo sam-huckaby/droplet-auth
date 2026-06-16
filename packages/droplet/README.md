@@ -16,6 +16,14 @@ bunx @whnvr/droplet make auth my-auth
 
 This creates `my-auth` from the readable auth app template included in this package.
 
+## Create A Droplet Tasks App
+
+```sh
+bunx @whnvr/droplet make tasks my-tasks
+```
+
+This creates `my-tasks` from the readable tasks app template included in this package.
+
 ## Auth Worker Helper
 
 Use `@whnvr/droplet/auth/worker` inside protected Cloudflare Workers.

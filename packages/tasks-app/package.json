@@ -1,22 +1,22 @@
 {
-  "name": "@whnvr/droplet-auth-app",
+  "name": "@whnvr/droplet-tasks-app",
   "private": true,
   "type": "module",
   "dependencies": {
-    "@simplewebauthn/browser": "latest",
-    "@simplewebauthn/server": "latest",
     "@whnvr/droplet": "workspace:*",
     "@effect/platform-bun": "catalog:",
     "@effect/platform-node": "catalog:",
     "alchemy": "catalog:",
     "effect": "catalog:",
-    "jose": "latest"
+    "jose": "latest",
+    "marked": "latest",
+    "sanitize-html": "latest"
   },
   "devDependencies": {
-    "@cloudflare/vitest-pool-workers": "latest",
     "@cloudflare/workers-types": "latest",
     "@types/bun": "catalog:",
     "@types/node": "latest",
+    "@types/sanitize-html": "latest",
     "typescript": "latest",
     "vitest": "latest",
     "wrangler": "latest"
@@ -26,8 +26,6 @@
     "check:types": "bunx tsc --noEmit",
     "test": "bun run --cwd ../droplet build && vitest run",
     "test:run": "vitest run",
-    "generate:key": "bun ./scripts/generate-auth-key.ts",
-    "setup:print": "bun ./scripts/print-setup.ts",
     "deploy": "bun run --cwd ../droplet build && bun alchemy deploy ./alchemy.run.ts",
     "destroy": "bun alchemy destroy ./alchemy.run.ts"
   }

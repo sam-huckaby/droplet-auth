@@ -3,20 +3,20 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@simplewebauthn/browser": "latest",
-    "@simplewebauthn/server": "latest",
     "@whnvr/droplet": "0.1.2",
     "@effect/platform-bun": "4.0.0-beta.83",
     "@effect/platform-node": "4.0.0-beta.83",
     "alchemy": "2.0.0-beta.55",
     "effect": "4.0.0-beta.83",
-    "jose": "latest"
+    "jose": "latest",
+    "marked": "latest",
+    "sanitize-html": "latest"
   },
   "devDependencies": {
-    "@cloudflare/vitest-pool-workers": "latest",
     "@cloudflare/workers-types": "latest",
     "@types/bun": "latest",
     "@types/node": "latest",
+    "@types/sanitize-html": "latest",
     "typescript": "latest",
     "vitest": "latest",
     "wrangler": "latest"
@@ -24,8 +24,6 @@
   "scripts": {
     "check": "bunx tsc --noEmit",
     "test": "vitest run",
-    "generate:key": "bun ./scripts/generate-auth-key.ts",
-    "setup:print": "bun ./scripts/print-setup.ts",
     "deploy": "bun alchemy deploy ./alchemy.run.ts",
     "destroy": "bun alchemy destroy ./alchemy.run.ts"
   }

@@ -55,14 +55,18 @@
     }
   },
   "scripts": {
-    "check": "bun run --cwd packages/droplet check && bun run --cwd packages/auth-app check",
-    "test": "bun run --cwd packages/auth-app test",
+    "check": "bun run build && bun run --cwd packages/droplet check && bun run --cwd packages/auth-app check:types && bun run --cwd packages/tasks-app check:types",
+    "test": "bun run build && bun run --cwd packages/auth-app test:run && bun run --cwd packages/tasks-app test:run",
     "build": "bun run --cwd packages/droplet build",
     "promote:auth": "bun ./scripts/promote-auth-template.ts",
+    "promote:tasks": "bun ./scripts/promote-tasks-template.ts",
     "check:auth-template": "bun run promote:auth && git diff --exit-code -- packages/droplet/templates/auth",
+    "check:tasks-template": "bun run promote:tasks && git diff --exit-code -- packages/droplet/templates/tasks",
     "publish:dry-run": "bun run --cwd packages/droplet publish:dry-run",
     "deploy:auth": "bun run --cwd packages/auth-app deploy",
-    "destroy:auth": "bun run --cwd packages/auth-app destroy"
+    "destroy:auth": "bun run --cwd packages/auth-app destroy",
+    "deploy:tasks": "bun run --cwd packages/tasks-app deploy",
+    "destroy:tasks": "bun run --cwd packages/tasks-app destroy"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "latest",
