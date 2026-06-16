@@ -5,7 +5,7 @@
   "dependencies": {
     "@simplewebauthn/browser": "latest",
     "@simplewebauthn/server": "latest",
-    "@whnvr/droplet": "0.1.0",
+    "@whnvr/droplet": "0.1.1",
     "@effect/platform-bun": "4.0.0-beta.83",
     "@effect/platform-node": "4.0.0-beta.83",
     "alchemy": "2.0.0-beta.55",

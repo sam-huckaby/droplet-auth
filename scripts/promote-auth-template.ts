@@ -173,10 +173,17 @@ async function rewriteReadme(): Promise<void> {
     .replaceAll("bun run --cwd packages/auth-app generate:key", "bun run generate:key")
     .replaceAll("bun run --cwd packages/auth-app setup:print", "bun run setup:print")
     .replaceAll("bun run --cwd packages/auth-app deploy", "bun run deploy")
+    .replaceAll("from this monorepo", "")
+    .replaceAll("Generate it  with:", "Generate it with:")
+    .replaceAll("In a generated standalone auth app, run:\n\n```sh\nbun run generate:key\n```\n\n", "")
+    .replaceAll("Install dependencies from the repo root:", "Install dependencies from the app directory:")
+    .replaceAll("### Deploy From The Monorepo", "### Deploy")
+    .replaceAll("bun run --cwd packages/auth-app/examples/protected-worker alchemy deploy ./alchemy.run.ts", "bun run --cwd examples/protected-worker alchemy deploy ./alchemy.run.ts")
     .replaceAll(
       "bun run --cwd packages/auth-app alchemy deploy ./examples/protected-worker/alchemy.run.ts",
       "bun run --cwd examples/protected-worker alchemy deploy ./alchemy.run.ts",
-    );
+    )
+    .replace(/\n### Template Promotion\n\n[\s\S]*?```sh\nbun run promote:auth\n```\n?/, "");
   await Bun.write(readmePath, normalizeNewlines(rewritten));
 }
 
