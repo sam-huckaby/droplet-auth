@@ -1,0 +1,5 @@
+.env
+.alchemy/
+.wrangler/
+node_modules/
+dist/

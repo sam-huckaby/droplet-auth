@@ -15,11 +15,14 @@ Current builders:
 ```sh
 bunx @whnvr/droplet make auth my-auth
 bunx @whnvr/droplet make tasks my-tasks
+bunx @whnvr/droplet make chat my-chat
 ```
 
 This creates a standalone Droplet Auth app that you deploy to your Cloudflare account. It gives you passkey auth, an admin portal, app-scoped sessions, JWKS verification, and protected Worker integration without paying for a separate hosted auth service.
 
 The tasks builder creates a standalone Droplet Tasks app: one Cloudflare Worker-backed project tracker with nested tasks, configurable statuses, append-only notes, and an agent JSON API.
+
+The chat builder creates a standalone Droplet Chat app: one Cloudflare Worker-backed realtime project room with top-level messages, one-level threads, R2-backed attachments, optional Droplet Auth protection, and an agent JSON API.
 
 Future builders will follow the same shape:
 
@@ -48,7 +51,7 @@ import {
 } from "@whnvr/droplet/auth/worker";
 ```
 
-## Current Droplet: Auth And Tasks
+## Current Droplet: Auth, Tasks, And Chat
 
 Droplet Auth is the first builder. It creates a Cloudflare Worker app with:
 
@@ -69,10 +72,20 @@ Droplet Tasks creates a Cloudflare Worker app with:
 - Agent-readable JSON API
 - Optional Droplet Auth protection
 
+Droplet Chat creates a Cloudflare Worker app with:
+
+- SQLite-backed Durable Object room state
+- Realtime browser UI over WebSockets
+- Top-level messages and one-level threads
+- R2-backed file uploads with bounded retention
+- Agent-readable JSON API
+- Optional Droplet Auth protection
+
 Read more:
 
 - `packages/auth-app/README.md` for deployment details
 - `packages/tasks-app/README.md` for task app deployment details
+- `packages/chat-app/README.md` for chat app deployment details
 - `packages/droplet/README.md` for helper API usage
 
 ## Packages
@@ -80,8 +93,10 @@ Read more:
 - `packages/droplet` publishes `@whnvr/droplet` with CLI builders, helpers, and templates.
 - `packages/auth-app` contains the source-of-truth Droplet Auth app used to generate the auth template.
 - `packages/tasks-app` contains the source-of-truth Droplet Tasks app used to generate the tasks template.
+- `packages/chat-app` contains the source-of-truth Droplet Chat app used to generate the chat template.
 - `packages/droplet/templates/auth` is the generated standalone auth template copied by `droplet make auth`.
 - `packages/droplet/templates/tasks` is the generated standalone tasks template copied by `droplet make tasks`.
+- `packages/droplet/templates/chat` is the generated standalone chat template copied by `droplet make chat`.
 
 ## Development
 
@@ -145,6 +160,24 @@ bun run check:tasks-template
 ```
 
 The generated template rewrites monorepo-only package metadata into standalone package metadata and fails if forbidden local references such as `workspace:`, `catalog:`, or `packages/tasks-app` remain.
+
+### Promote Chat Template
+
+`packages/chat-app` is the source of truth for the chat builder. `packages/droplet/templates/chat` is generated from it.
+
+Regenerate the template before publishing:
+
+```sh
+bun run promote:chat
+```
+
+Check that the committed template is fresh:
+
+```sh
+bun run check:chat-template
+```
+
+The generated template rewrites monorepo-only package metadata into standalone package metadata and fails if forbidden local references such as `workspace:`, `catalog:`, or `packages/chat-app` remain.
 
 ### Publish Dry Run
 

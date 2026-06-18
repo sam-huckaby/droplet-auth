@@ -1,6 +1,6 @@
 {
   "name": "@whnvr/droplet",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Composable helpers for self-hosted Droplet apps.",
   "keywords": ["auth", "passkeys", "cloudflare", "worker", "droplet"],
   "homepage": "https://github.com/sam-huckaby/droplet#readme",

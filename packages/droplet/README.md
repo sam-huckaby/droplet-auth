@@ -24,6 +24,14 @@ bunx @whnvr/droplet make tasks my-tasks
 
 This creates `my-tasks` from the readable tasks app template included in this package.
 
+## Create A Droplet Chat App
+
+```sh
+bunx @whnvr/droplet make chat my-chat
+```
+
+This creates `my-chat` from the readable chat app template included in this package.
+
 ## Auth Worker Helper
 
 Use `@whnvr/droplet/auth/worker` inside protected Cloudflare Workers.

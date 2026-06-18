@@ -5,10 +5,12 @@ import { basename, dirname, join, resolve } from "node:path";
 const USAGE = `Usage:
   droplet make auth <dir> [--force]
   droplet make tasks <dir> [--force]
+  droplet make chat <dir> [--force]
 
 Commands:
   make auth <dir>   Create a standalone Droplet Auth app from the packaged template.
   make tasks <dir>  Create a standalone Droplet Tasks app from the packaged template.
+  make chat <dir>   Create a standalone Droplet Chat app from the packaged template.
 
 Options:
   --force           Replace an existing target directory.
@@ -33,10 +35,10 @@ async function main(args: string[]): Promise<void> {
   await makeApp(type, targetArg, { force: rest.includes("--force") });
 }
 
-type TemplateType = "auth" | "tasks";
+type TemplateType = "auth" | "tasks" | "chat";
 
 function isTemplateType(value: string | undefined): value is TemplateType {
-  return value === "auth" || value === "tasks";
+  return value === "auth" || value === "tasks" || value === "chat";
 }
 
 async function makeApp(type: TemplateType, targetArg: string, options: { force: boolean }): Promise<void> {
@@ -44,7 +46,7 @@ async function makeApp(type: TemplateType, targetArg: string, options: { force: 
   const templateDir = join(packageRoot, `templates/${type}`);
   const targetDir = resolve(process.cwd(), targetArg);
   const projectName = toPackageName(basename(targetDir), type);
-  const displayName = type === "auth" ? "Auth" : "Tasks";
+  const displayName = type === "auth" ? "Auth" : type === "tasks" ? "Tasks" : "Chat";
 
   if (!(await exists(templateDir))) {
     throw new CliError(`${displayName} template not found at ${templateDir}. Reinstall @whnvr/droplet and try again.`);
@@ -111,7 +113,7 @@ function toPackageName(value: string, type: TemplateType): string {
     .replace(/[^a-z0-9._-]+/g, "-")
     .replace(/^[._-]+|[._-]+$/g, "")
     .replace(/-{2,}/g, "-");
-  return name || (type === "auth" ? "droplet-auth" : "droplet-tasks");
+  return name || (type === "auth" ? "droplet-auth" : type === "tasks" ? "droplet-tasks" : "droplet-chat");
 }
 
 class CliError extends Error {}

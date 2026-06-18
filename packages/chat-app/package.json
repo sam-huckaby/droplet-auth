@@ -1,0 +1,30 @@
+{
+  "name": "@whnvr/droplet-chat-app",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@whnvr/droplet": "workspace:*",
+    "@effect/platform-bun": "catalog:",
+    "@effect/platform-node": "catalog:",
+    "alchemy": "catalog:",
+    "effect": "catalog:",
+    "jose": "latest"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "latest",
+    "@types/bun": "catalog:",
+    "@types/node": "latest",
+    "typescript": "latest",
+    "vitest": "latest",
+    "wrangler": "latest"
+  },
+  "scripts": {
+    "check": "bun run --cwd ../droplet build && bunx tsc --noEmit",
+    "check:types": "bunx tsc --noEmit",
+    "test": "bun run --cwd ../droplet build && vitest run",
+    "test:run": "vitest run",
+    "generate:api-key": "bun run scripts/generate-api-key.ts",
+    "deploy": "bun run --cwd ../droplet build && bun alchemy deploy ./alchemy.run.ts",
+    "destroy": "bun alchemy destroy ./alchemy.run.ts"
+  }
+}

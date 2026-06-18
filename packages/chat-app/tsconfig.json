@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["@cloudflare/workers-types", "node", "bun"],
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "paths": {
+      "alchemy": ["./node_modules/alchemy/src/index.ts"],
+      "alchemy/*": ["./node_modules/alchemy/src/*"],
+      "effect": ["./node_modules/effect/src/index.ts"],
+      "effect/*": ["./node_modules/effect/src/*"]
+    }
+  },
+  "include": ["src", "tests", "scripts", "alchemy.run.ts", "vitest.config.ts"]
+}
